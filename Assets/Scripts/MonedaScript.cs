@@ -19,9 +19,11 @@ public class MonedaScript : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D col){
+
         if (col.name == "Personaje"){
             GameManager.puntos += 1;
             miAnimadorController.SetBool("monedaDestruir", true);
+            AudioManager.Instance.SonarClipUnaVez(AudioManager.Instance.fxCoin);
             Destroy(this.gameObject, 1f);
         } 
     }

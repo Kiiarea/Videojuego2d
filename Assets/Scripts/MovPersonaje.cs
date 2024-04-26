@@ -35,7 +35,6 @@ public class MovPersonaje : MonoBehaviour
 
         transform.position = respawn.transform.position;
         
-
         transform.position = new Vector3(-3.48f, -0.01f, 0);
     }
 
@@ -72,7 +71,6 @@ public class MovPersonaje : MonoBehaviour
 
         //SALTO
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.5f);
-
         Debug.DrawRay(transform.position, Vector2.down, Color.magenta);
 
         if(hit){
@@ -95,6 +93,7 @@ public class MovPersonaje : MonoBehaviour
 
         //Comprobar si me he salido de la pantalla (por abajo)
         if(transform.position.y <= -7){
+            AudioManager.Instance.SonarClipUnaVez(AudioManager.Instance.fxDead);
             Respawnear();
         }
 
@@ -139,5 +138,25 @@ public class MovPersonaje : MonoBehaviour
 
      
     }   
+
+    void OnTriggerEnter2D(Collider2D col){
+
+        if(col.gameObject.name == "Tunel"){
+            //disparo tunnel
+
+            AudioManager.Instance.IniciarEfectoTunel();
+        }
+
+        if(col.gameObject.name == "Burbuja"){
+            //disparo tunnel
+            AudioManager.Instance.IniciarEfectoBurbuja();
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col){
+        if(col.gameObject.name == "Tunel" || col.gameObject.name == "Burbuja"){
+            AudioManager.Instance.IniciarEfectoDefault();
+        }
+    }
     
 }
