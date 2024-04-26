@@ -8,13 +8,21 @@ public class MovPersonaje : MonoBehaviour
     public float multiplicador = 5f;
     public float multiplicadorSalto = 5f;
 
+    float movTeclas;
+
     private bool puedoSaltar = true;
+
+    private bool activaSaltoFixed = false;
+
+    public bool miraDerecha = true;
 
     private Rigidbody2D rb;
 
     private Animator animatorController;
 
     GameObject respawn;
+
+    bool soyAzul;
 
     // Start is called before the first frame update
     void Start()
@@ -39,19 +47,19 @@ public class MovPersonaje : MonoBehaviour
         float miDeltaTime = Time.deltaTime;
 
         //MOVIMIENTO
-        float movTeclas = Input.GetAxis("Horizontal"); //(a -1f - d 1f)
+        movTeclas = Input.GetAxis("Horizontal"); //(a -1f - d 1f)
         //float movTeclas = Input.GetAxis("Vertical"); //(a -1f - d 1f)
 
-        rb.velocity = new Vector2(movTeclas*multiplicador, rb.velocity.y);
-
-        //FLIP
+        //FLIP IZQ
         if(movTeclas < 0){
         this.GetComponent<SpriteRenderer>().flipX = true;
+        miraDerecha = false;
 
-        }else if(movTeclas > 0)
+        }else if(movTeclas > 0){
 
-        if(movTeclas > 0){
+        //FLIP DCH
         this.GetComponent<SpriteRenderer>().flipX = false;
+        miraDerecha = true;
         }
 
         //ANIMACIÓN WALKING
@@ -74,11 +82,15 @@ public class MovPersonaje : MonoBehaviour
             puedoSaltar = false;
         }
         if(Input.GetKeyDown(KeyCode.Space) && puedoSaltar){
+            activaSaltoFixed = true;
+
+            //PuedoSaltarFixed
+            /*
             rb.AddForce(
                 new Vector2(0,multiplicadorSalto),
                 ForceMode2D.Impulse
                 );
-    
+                */
         }
 
         //Comprobar si me he salido de la pantalla (por abajo)
@@ -95,6 +107,17 @@ public class MovPersonaje : MonoBehaviour
         }
     }
 
+    void FixedUpdate(){
+        rb.velocity = new Vector2(movTeclas*multiplicador, rb.velocity.y);
+        if(activaSaltoFixed == true){
+        rb.AddForce(
+                new Vector2(0,multiplicadorSalto),
+                ForceMode2D.Impulse
+                );
+                activaSaltoFixed = false;
+        }
+    }
+
     public void Respawnear(){
 
         Debug.Log("vidas: "+GameManager.vidas);
@@ -102,5 +125,19 @@ public class MovPersonaje : MonoBehaviour
         Debug.Log("vidas: "+GameManager.vidas);
 
         transform.position = respawn.transform.position;
-    }
+        }
+
+        public void CambiarColor(){
+
+            if(soyAzul){
+            this.GetComponent<SpriteRenderer>().color = Color.white;
+            soyAzul = false;
+            }else{
+            this.GetComponent<SpriteRenderer>().color = Color.blue;
+            soyAzul = true;
+        }
+
+     
+    }   
+    
 }
